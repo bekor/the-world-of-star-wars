@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %}Planets{% endblock %}
+{% block body %}
+<div class="row">
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    {% for planet_property_name in planet_properties_name %}
+                    <th>{{ planet_property_name }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for planet_dataset in planets_result_set %}
+                <tr>
+                    {% for planet_property in planet_dataset %}
+                        <td>{{ planet_property }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
