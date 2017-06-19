@@ -1,5 +1,6 @@
 from flask import Flask, session, redirect, url_for, escape, request, render_template
 from flask_restful import Resource, Api
+from werkzeug.security import generate_password_hash, check_password_hash
 import os
 
 app = Flask(__name__)
@@ -12,12 +13,19 @@ def index():
         return 'Logged in as %s' % escape(session['username'])
     return 'You are not logged in'
 
+def set_password_hash(password):
+    pw_hash = generate_password_hash(password)
+    return pw_hash
+
+def check_password(self, password):
+        return check_password_hash(self.pw_hash, password)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         session['sessionId'] = os.urandom(24)
         session['username'] = request.form['username']
-        session['password'] = request.form['password']
+        session['password'] = set_password_hash(request.form['password'])
         return redirect(url_for('index'))
     return '''
         <form method="post">
