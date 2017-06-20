@@ -1,0 +1,33 @@
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">SW Planets</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/">Home</a></li>
+            </ul>
+            {% if not session.username %}
+            <form class="navbar-form navbar-right" role="form">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="username" placeholder="Username">
+                    <input type="password" class="form-control" name="password" placeholder="Password">
+                </div>
+                <button type="button" class="btn btn-default">Sign In</button>
+                <button type="button" class="btn btn-default" id="registrationButton">Registration</button>
+            </form>
+            {% else %}
+            <div clas="nav-form navbar-right">
+                <p>{{ session.username }}</p>
+                <button type="button" class="btn btn-default">Logout</button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</nav>
