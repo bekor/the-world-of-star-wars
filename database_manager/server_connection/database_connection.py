@@ -29,13 +29,19 @@ class Database():
         cursor.execute(query)
         return cursor.fetchall()
 
+    def modify_table(self, query):
+        cursor = self.cursor
+        print(query)
+        cursor.execute(query)
+        print("something")
+        return "Done"
+
     def __exit__(self, exc_type, exc_values, traceback):
         self.cursor.close()
         if self.connection:
             self.connection.close()
 
-
 if __name__ == '__main__':
     db = Database()
-    q = "SELECT * FROM planet_votes"
+    q = "SELECT * FROM swuser"
     print(db.query_handler(q))

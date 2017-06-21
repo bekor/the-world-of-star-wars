@@ -1,7 +1,8 @@
-from flask import Flask, session, redirect, url_for, escape, request, render_template, json
-from flask_restful import Resource, Api
-from hash_helper import set_password_hash, check_password
-from database_manager import query_handler
+from flask import Flask, session, redirect, url_for, escape, request, render_template, json, jsonify
+from flask_restful import Resource, Api, reqparse
+from hash_helper import User
+from database_manager import query_hand
+from werkzeug.security import check_password_hash
 import os
 
 app = Flask(__name__)
@@ -11,55 +12,84 @@ api = Api(app)
 @app.route('/')
 def index():
     if 'username' in session:
-        return render_template('list.html')
+        return redirect(url_for('list_planets'))
     return render_template('index.html')
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/list')
+def list_planets():
+    planet_properties_name = ["Name", "Diameter in KM", "Climate", "Terrain", 
+                              "Surface water", "Population", "Residents"]
+    return render_template('planets.html',
+                           planet_properties_name=planet_properties_name,
+                           )
+
+
+@app.route('/login', methods=['POST'])
 def login():
-    if request.method == 'POST':
+    pw = request.form['password']
+    username = request.form['username']
+    database_pw = query_hand.get_user_password(username)
+    if(check_password_hash(database_pw, pw)):
         session['sessionId'] = os.urandom(24)
-        session['username'] = request.form['username']
-        session['password'] = set_password_hash(request.form['password'])
-        return redirect(url_for('index'))
-    return '''
-        <form method="post">
-            <p><input type=text name=username></p>
-            <p><input type=text name=password></p>
-            <p><input type=submit value=Login></p>
-        </form>
-    '''
+        session['username'] = username
+        return json.dumps({'status': 'OK', 'username': username})
+    else:
+        return json.dumps({'status': 'NO', 'username': username})
 
 
-@app.route('/logout')
+@app.route('/logout', methods=['POST'])
 def logout():
-    # remove the username from the session if it's there
     session.pop('username', None)
-    return redirect(url_for('index'))
+    return json.dumps({'status': 'OK'})
+
+
+@app.route('/registration', methods=['POST'])
+def registration():
+    pw = request.form['regPassword']
+    print(pw)
+    username = request.form['regUsername']
+    user_exist = query_hand.username_exist(username)
+    if user_exist:
+        return json.dumps({'status': 'NO', 'username': username})
+    else:
+        new_user = User(username, pw)
+        user_data = {
+            'username': username,
+            'password': new_user.pw_hash
+        }
+        print(new_user.pw_hash)
+        query_hand.user_registration(user_data)
+        return json.dumps({'status': 'OK'})
 
 # set the secret key.  keep this really secret:
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
 
-@app.route('/list')
-def home():
-    planet_properties_name = ["Name", "Diameter in KM", "Climate", "Terrain", 
-                              "Surface water", "Population", "Residents"]
-    if 'username' in session:
-        return render_template('planets.html',
-                               planet_properties_name=planet_properties_name,
-                               )
-    else:
-        return render_template('planets.html',
-                               planet_properties_name=planet_properties_name,
-                               )
+# class Registration(Resource):
+    # def get(self):
+    #     return {'macska':'eger'}
 
+    # def post(self):
+    #     print("Fak this shit")
+    #     parser = reqparse.RequestParser()
+    #     print(dir(parser))
+    #     print(id(parser))
+    #     print(callable(parser))
+    #     parser.add_argument('username', type=str, required=True)
+    #     parser.add_argument('password', type=str, required=True)
 
-class Document(Resource):
-    def get(self):
-        return {'hello': 'world'}
-
-api.add_resource(Document, '/document')
+    #     args = parser.parse_args()
+    #     print('name ' + args['username'])
+    #     print(parser.args)
+    #     # pw = set_password_hash()
+    #     # user_data = {
+    #     #     username: user_reg_data.username,
+    #     #     passord: pw
+    #     # }
+    #     # user_registration(user_data)
+    #     return {'hello': 'user'}
+# api.add_resource(Registration, '/registration')
 
 if __name__ == '__main__':
     app.run(debug=True)

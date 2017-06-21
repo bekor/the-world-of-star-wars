@@ -19,14 +19,18 @@
                     <input type="text" class="form-control" name="username" placeholder="Username">
                     <input type="password" class="form-control" name="password" placeholder="Password">
                 </div>
-                <button type="button" class="btn btn-default">Sign In</button>
+                <button type="button" class="btn btn-default" id="navSignIn">Sign In</button>
                 <button type="button" class="btn btn-default" id="registrationButton">Registration</button>
             </form>
             {% else %}
-            <div clas="nav-form navbar-right">
-                <p>{{ session.username }}</p>
-                <button type="button" class="btn btn-default">Logout</button>
-            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="" ><a href="#" id="activeUser">{{ session.username }}</a></li>
+                <li class="">
+                    <p class="navbar-btn" type="button" id="navLogout">
+                        <a href="#" class="btn btn-default">Logout</a>
+                    </p>
+                </li>
+            </ul> 
             {% endif %}
         </div>
     </div>

@@ -1,7 +1,7 @@
 from database_manager.server_connection.database_connection import Database
 
 
-def sql_mentors_schools():
+def user_registration(user_data):
     with Database() as db:
         query = """SELECT mentors.first_name, mentors.last_name, schools.name, schools.country
                 FROM mentors
@@ -10,6 +10,17 @@ def sql_mentors_schools():
                 ORDER BY mentors.id
                 """
         return db.query_handler(query)
+        
+def select_user_by_name(user_data):
+    with Database() as db:
+        query = """SELECT mentors.first_name, mentors.last_name, schools.name, schools.country
+                FROM mentors
+                LEFT OUTER JOIN schools
+                ON mentors.city = schools.city
+                ORDER BY mentors.id
+                """
+        return db.query_handler(query)
+
 
 
 def sql_all_school():
