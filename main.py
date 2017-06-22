@@ -47,7 +47,6 @@ def logout():
 @app.route('/registration', methods=['POST'])
 def registration():
     pw = request.form['regPassword']
-    print(pw)
     username = request.form['regUsername']
     user_exist = query_hand.username_exist(username)
     if user_exist:
@@ -58,9 +57,23 @@ def registration():
             'username': username,
             'password': new_user.pw_hash
         }
-        print(new_user.pw_hash)
         query_hand.user_registration(user_data)
         return json.dumps({'status': 'OK'})
+
+
+@app.route('/planetvote', methods=['POST'])
+def planetvote():
+    planet_id = request.form['planetid']
+    username = request.form['username']
+    query_hand.insert_vote(planet_id, username)
+    return json.dumps({'status': 'OK'})
+
+
+@app.route('/<username>/voted-planets')
+def user_voted_planets(username):
+    planets = query_hand.get_user_voted_planets(username)
+    return json.dumps({'status': 'OK', 'planets': planets})
+
 
 # set the secret key.  keep this really secret:
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'

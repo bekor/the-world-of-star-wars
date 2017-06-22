@@ -14,7 +14,11 @@
         {% include "ppl_residents.html" %}
         <div class="jumbotron">
             <div class="container-fluid">
-            {% block body %}{% endblock %}
+                <div class="row" id="pageButtons">
+                    <button type="button" class="btn btn-default changePageButton" id="previousPage" disabled>Previous</button>
+                    <button type="button" class="btn btn-default changePageButton" id="nextPage" disabled>Next Page</button>
+                </div>
+                {% block body %}{% endblock %}
             </div>
         </div>
         

@@ -1,15 +1,35 @@
-function planets(){
-    getPlanets();
+function planets(planetUrl){
+    planetUrl =  planetUrl !== 0 ? planetUrl : 'http://swapi.co/api/planets'
+    sessionStorage.setItem('planetUrl', planetUrl)
+    var userName = $('#planet').data('usersession').toString();
+    if( userName.length > 1){
+        getVotes(userName);
+    } else {
+        getPlanets(planetUrl);
+    }
 
 }
 
+function getVotes(userName){
+    console.log("here")
+    $.getJSON('/' + userName + '/voted-planets', function(response){
+        getVotedPlanetsCallback(response.planets, userName);
+    })
+}
+
+function getVotedPlanetsCallback(votedPlanets, userName){
+    sessionStorage.setItem('votedPlanets', votedPlanets)
+    getPlanets();
+}
+
 function getPlanets(){
+    planetUrl = sessionStorage.getItem('planetUrl')
     var planetResults;
     $.ajax({
         dataType: "json",
-        url: "http://swapi.co/api/planets",
+        url: planetUrl,
         success: function (response) {
-            getPlanetsCallback(response.results);
+            getPlanetsCallback(response);
         },
         fail: function(data, status){
             console.log(status)
@@ -18,19 +38,59 @@ function getPlanets(){
     return planetResults;
 }
 
-function getPlanetsCallback(planetsArray){
+function getPlanetsCallback(response){
+    generateButtons(response.next, response.previous);
+    generatePlanets(response.results);
+}
+
+function generateButtons(next, prev){
+    $('#previousPage').prop('disabled', true)
+    $('#nextPage').prop('disabled', true)
+    if(prev !== null){
+        console.log("here with : " + prev)
+        $('#previousPage').attr('data-url', prev).prop('disabled', false);
+    }
+    if(next !== null){
+        $('#nextPage').attr('data-url', next).prop('disabled', false);
+    }
+
+    $(document).on('click', '.changePageButton', function(event) {
+        var pageUrl = $(this).attr('data-url');
+        $('tbody').empty();
+        planets(pageUrl)
+    });
+}
+
+function generatePlanets(planetsArray){
     planetAttrsName = ['name', 'diameter', 
                        'climate', 'terrain',
                        'surface_water', 'population',
                        'residents'];
+    var votedPlanets = sessionStorage.getItem('votedPlanets')
     for(let i = 0; i < planetsArray.length; i++){
-        generatePlanetRow(planetsArray[i], planetAttrsName);
+        generatePlanetRow(planetsArray[i], planetAttrsName, votedPlanets);
     }
+
+     $(document).on('click', '.voteButton', function(event) {
+        $(this).parent().hide();
+        var votedPlanetId = $(this).attr('data-planetId');
+        var username = $('#planet').data('usersession').toString();
+        registVote(votedPlanetId, username);
+    });
 }
 
-function generatePlanetRow(planetAttribute, attributeNames) {
+function registVote(planetId, username){
+    $.post("/planetvote", { planetid: planetId, username: username})
+        .done(function(data){
+            alert("Vote accepted")
+        });
+}
+
+function generatePlanetRow(planetAttribute, attributeNames, votedPlanets) {
     var planetHtmlId = planetAttribute.name.slice(0,2) + planetAttribute.orbital_period;
-    let generateRow = $('<tr>').attr('id', planetHtmlId);
+    var planetUrlId = planetAttribute.url.slice(28, -1);
+    
+    let generateRow = $('<tr>').attr('id', planetHtmlId).attr('data-generated', true);
     $(generateRow).appendTo('tbody');
     for(let i = 0; i< attributeNames.length; i++) {
         let palnetAtr;
@@ -58,6 +118,14 @@ function generatePlanetRow(planetAttribute, attributeNames) {
             $(palnetAtr).appendTo(generateRow);
         }
     }
+    var userSession = $('#planet').data('usersession').toString();
+    if(userSession.length > 1 && $.inArray(planetUrlId, votedPlanets)){
+        var generateVoteRow = $('<tr>').append($('<button>')
+                                        .attr('class', 'voteButton')
+                                        .attr('data-planetId', planetUrlId)
+                                        .text('Vote for ' + planetAttribute.name));
+        generateRow.after($(generateVoteRow));
+    }
 }
 
 function valueResidtensButton(residents){
@@ -76,4 +144,4 @@ function valueResidtensButton(residents){
     };
 }
 
-planets();
+planets(pageUrl=0);

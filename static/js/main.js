@@ -8,6 +8,16 @@ function main(){
         $('#residenceBody').html("");
     })
 
+    userRegistration();
+    userSignIn();
+    userLogOut();
+}
+
+function userRegistration(){
+    $('#registrationButton').click(function() {
+        $('#registrationModal').modal('show');
+    });
+
     $('#buttonRegist').click(function(){
         console.log($('form').serialize())
         $.ajax({
@@ -24,7 +34,28 @@ function main(){
             }
         });
     });
+}
 
+function userLogOut(){
+    $('#navLogout').click(function(){
+        console.log("something")
+        $.ajax({
+            dataType: "json",
+            url: '/logout',
+            type: 'POST',
+            data: $('#activeUser').text(),
+            success: function(result){
+                console.log(result);
+                location.href = "/"
+            },
+            error: function(error){
+                console.log(error)
+            }
+        });
+    });
+}
+
+function userSignIn(){
     $('#navSignIn').click(function(){
         $.ajax({
             dataType: "json",
@@ -44,28 +75,6 @@ function main(){
             }
         });
     });
-
-    $('#navLogout').click(function(){
-        console.log("something")
-        $.ajax({
-            dataType: "json",
-            url: '/logout',
-            type: 'POST',
-            data: $('#activeUser').text(),
-            success: function(result){
-                console.log(result);
-                location.href = "/"
-            },
-            error: function(error){
-                console.log(error)
-            }
-        });
-    });
-
-    $('#registrationButton').click(function() {
-        $('#registrationModal').modal('show');
-    });
-
 }
 
 $(document).ready(main)
