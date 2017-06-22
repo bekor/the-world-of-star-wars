@@ -11,7 +11,6 @@ function planets(planetUrl){
 }
 
 function getVotes(userName){
-    console.log("here")
     $.getJSON('/' + userName + '/voted-planets', function(response){
         getVotedPlanetsCallback(response.planets, userName);
     })
@@ -47,7 +46,6 @@ function generateButtons(next, prev){
     $('#previousPage').prop('disabled', true)
     $('#nextPage').prop('disabled', true)
     if(prev !== null){
-        console.log("here with : " + prev)
         $('#previousPage').attr('data-url', prev).prop('disabled', false);
     }
     if(next !== null){

@@ -1,0 +1,24 @@
+function voteStatistics(){
+    var username = $('#userIn').data('username').toString()
+    if(username > 1){
+        $.getJSON('/list-of-voted-planets', function(response){
+            let statistics = response.statistics;
+            for(let i = 0; i < statistics.length; i++){
+                $.getJSON(statistics[i].planetUrl, function(swresponse){
+                    planetName = swresponse.name
+                    votes = statistics[i].votes
+                    generateRow(planetName, votes)
+                });
+            }
+        });
+    }
+}
+
+function generateRow(planetName, votes){
+    let generateRow = $('<tr>');
+    $(generateRow).appendTo('#votes');
+    $(generateRow).append($('<td>').text(planetName));
+    $(generateRow).append($('<td>').text(votes));
+}
+
+voteStatistics();

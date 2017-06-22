@@ -4,9 +4,7 @@ function residents(){
         $('#residenceTitle').text("");
 
         residentArray = $(this).data('peopleid').split(",");
-        console.log(residentArray)
         residenceName = $(this).data('residence');
-        console.log(residenceName)
         $('#residenceTitle').text("Residents of " + residenceName);
 
         people(residentArray, residenceName);
