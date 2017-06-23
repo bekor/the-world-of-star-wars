@@ -19,7 +19,7 @@ CREATE TABLE swuser (
 );
 
 DROP TABLE IF EXISTS public.planet_votes;
-DROP SEQUENCE IF EXISTS public.planet_votes_seq;
+DROP SEQUENCE IF EXISTS public.planet_votes_id_seq;
 CREATE TABLE planet_votes (
     id serial NOT NULL,
     planet_id integer,
@@ -37,3 +37,7 @@ ALTER TABLE ONLY swuser
 ALTER TABLE ONLY planet_votes
     ADD CONSTRAINT fk_swuser_id FOREIGN KEY (swuser_id) REFERENCES swuser(id);
 
+INSERT INTO swuser VALUES(1, 'bayi', 'aaa');
+SELECT pg_catalog.setval('swuser_id_seq', 1, true);
+INSERT INTO planet_votes VALUES(1,2,1,'2017-01-01 00:00:00');
+SELECT pg_catalog.setval('planet_votes_id_seq', 1, true);
