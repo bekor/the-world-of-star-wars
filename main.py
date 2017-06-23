@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from flask import Flask, session, request, render_template, json
 from hash_helper import User
 from database_manager import query_handler

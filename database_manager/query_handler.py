@@ -65,3 +65,5 @@ def get_voted_planets(cursor):
             ORDER BY votes"""
     cursor.execute(query)
     return cursor.fetchall()
+
+# get_voted_planets()
