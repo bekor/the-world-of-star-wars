@@ -53,7 +53,7 @@ def get_user_voted_planets(cursor, username):
     query = """SELECT planet_id FROM planet_votes WHERE swuser_id = %s"""
     cursor.execute(query, (swuser_id,))
     query_fatch = cursor.fetchall()
-    planetArray = [str(pl_id) for pl_id in query_fatch[0]]
+    planetArray = [pl_id[0] for pl_id in query_fatch]
     return planetArray
 
 

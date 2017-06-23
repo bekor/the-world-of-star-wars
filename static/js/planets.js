@@ -1,11 +1,10 @@
 function planets(planetUrl){
-    planetUrl =  planetUrl !== 0 ? planetUrl : 'http://swapi.co/api/planets'
     sessionStorage.setItem('planetUrl', planetUrl)
     var userName = $('#planet').data('usersession').toString();
     if( userName.length > 1){
         getVotes(userName);
     } else {
-        getPlanets(planetUrl);
+        getPlanets();
     }
 
 }
@@ -34,7 +33,6 @@ function getPlanets(){
             console.log(status)
         }
     });
-    return planetResults;
 }
 
 function getPlanetsCallback(response){
@@ -45,6 +43,7 @@ function getPlanetsCallback(response){
 function generateButtons(next, prev){
     $('#previousPage').prop('disabled', true)
     $('#nextPage').prop('disabled', true)
+    
     if(prev !== null){
         $('#previousPage').attr('data-url', prev).prop('disabled', false);
     }
@@ -52,11 +51,6 @@ function generateButtons(next, prev){
         $('#nextPage').attr('data-url', next).prop('disabled', false);
     }
 
-    $(document).on('click', '.changePageButton', function(event) {
-        var pageUrl = $(this).attr('data-url');
-        $('tbody').empty();
-        planets(pageUrl)
-    });
 }
 
 function generatePlanets(planetsArray){
@@ -65,16 +59,13 @@ function generatePlanets(planetsArray){
                        'surface_water', 'population',
                        'residents'];
     var votedPlanets = sessionStorage.getItem('votedPlanets')
+    votedPlanets = votedPlanets.split(',');
+    console.log(votedPlanets)
     for(let i = 0; i < planetsArray.length; i++){
         generatePlanetRow(planetsArray[i], planetAttrsName, votedPlanets);
     }
 
-     $(document).on('click', '.voteButton', function(event) {
-        $(this).parent().hide();
-        var votedPlanetId = $(this).attr('data-planetId');
-        var username = $('#planet').data('usersession').toString();
-        registVote(votedPlanetId, username);
-    });
+
 }
 
 function registVote(planetId, username){
@@ -117,7 +108,8 @@ function generatePlanetRow(planetAttribute, attributeNames, votedPlanets) {
         }
     }
     var userSession = $('#planet').data('usersession').toString();
-    if(userSession.length > 1 && $.inArray(planetUrlId, votedPlanets)){
+    planetUrlId = planetUrlId + ""
+    if(userSession.length > 1 && $.inArray(planetUrlId, votedPlanets) == -1){
         var generateVoteRow = $('<tr>').append($('<button>')
                                         .attr('class', 'voteButton')
                                         .attr('data-planetId', planetUrlId)
@@ -127,19 +119,36 @@ function generatePlanetRow(planetAttribute, attributeNames, votedPlanets) {
 }
 
 function valueResidtensButton(residents){
-    let residentText, peopleId = [];
+    let residentText, peopleId = []
     if(residents.length<1) {
-        residentText = 'Not known residents';
+        residentText = 'Not known residents'
     } else {
-        residentText = residents.length + ' residents';
+        residentText = residents.length + ' residents'
         for(let j = 0; j < residents.length; j++){
-            peopleId.push(residents[j]);
+            peopleId.push(residents[j])
         }
     }
     return {
         text: residentText,
         peopleId: peopleId
-    };
+    }
 }
 
-planets(pageUrl=0);
+
+$(document).ready(() => {
+    planets('http://swapi.co/api/planets')
+
+    $(document).on('click', '.voteButton', function(event) {
+        $(this).parent().hide()
+        var votedPlanetId = $(this).attr('data-planetId')
+        var username = $('#planet').data('usersession').toString()
+        registVote(votedPlanetId, username)
+    })
+
+    $('.changePageButton').on('click', function(event) {
+        var pageUrl = $(this).attr('data-url')
+        $('#planet').html("")
+        console.log("EMPTY called" + pageUrl)
+        planets(pageUrl)
+    })
+})
