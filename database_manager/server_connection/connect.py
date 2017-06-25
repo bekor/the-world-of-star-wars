@@ -1,7 +1,7 @@
 import psycopg2
 import sys
 import urllib
-from .config import get_config
+# from .config import get_config
 
 
 def connect_to_sql(func):
