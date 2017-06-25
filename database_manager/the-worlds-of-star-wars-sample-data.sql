@@ -38,7 +38,7 @@ ALTER TABLE ONLY planet_votes
     ADD CONSTRAINT fk_swuser_id FOREIGN KEY (swuser_id) REFERENCES swuser(id);
 
 INSERT INTO swuser VALUES(1, 'testuser', 'badpw');
-SELECT pg_catalog.setval('swuser_id_seq', 1. true);
+SELECT pg_catalog.setval('swuser_id_seq', 1, true);
 
 INSERT INTO planet_votes VALUES(1, 2, 1, '2017-01-01 00:00:00');
 SELECT pg_catalog.setval('planet_votes_id_seq', 1, true);
