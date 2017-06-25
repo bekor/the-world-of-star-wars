@@ -2,6 +2,7 @@ from flask import Flask, session, request, render_template, json
 from hash_helper import User
 from database_manager import query_handler
 from werkzeug.security import check_password_hash
+import requests
 import os
 
 app = Flask(__name__)
