@@ -6,7 +6,6 @@
 {% endblock %}
 
 {% block body %}
-<script src="{{ url_for('static', filename='js/vote_statistics.js') }}" defer></script>
 <div class="container">
     <div class="text-vertical-center">
         <h1>Vote on The planets of the Star Wars universe</h1>
@@ -16,20 +15,5 @@
             <p id="userIn" data-username="">Login for vote on planets.</p>
         {% endif %}
     </div>
-    {% if session.username %}
-    <div class="table-responsive">
-        <table class="table table-hover" id="vote_table">
-            <thead>
-                <tr>
-                    <th>Planet name</th>
-                    <th>Votes</th>
-                </tr>
-            </thead>
-            <tbody id="votes" data-usersession="{{ session.username }}">
-            </tbody>
-        </table>
-    </div>
-    {% else %}
-    {% endif %}
 </div>
 {% endblock %}

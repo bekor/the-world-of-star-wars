@@ -10,10 +10,20 @@
             <a class="navbar-brand" href="/">SW Planets</a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
+            <ul class="nav navbar-nav navbar-left">
                 <li class=""><a href="/">SW index</a></li>
                 <li class=""><a href="/list">SW Planets</a></li>
+
             </ul>
+            {% if session.username %}
+            <ul class="nav navbar-nav">
+                <li class="">
+                    <p class="navbar-btn" type="button" id="voteStatButton">
+                        <a class="btn btn-info">Vote Statistics</a>
+                    </p>
+                </li>
+            </ul>
+            {% endif %}
             {% if not session.username %}
             <form class="navbar-form navbar-right" role="form">
                 <div class="form-group">

@@ -7,3 +7,4 @@ def get_config():
         "user": "yourusername",
         "passwd": "yourpw"
     }
+    return db_settings

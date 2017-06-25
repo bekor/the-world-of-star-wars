@@ -6,13 +6,17 @@
 {% block body %}
 <script src="{{ url_for('static', filename='js/planets.js') }}" defer></script>
 <script src="{{ url_for('static', filename='js/residents.js') }}" defer></script>
-
-<div class="table-responsive">
+<h1>Star Wars universe planets</h1>
+<div class="row text-center" id="pageButtons">
+    <button type="button" class="btn btn-primary changePageButton" id="previousPage" disabled>Previous</button>
+    <button type="button" class="btn btn-primary changePageButton" id="nextPage" disabled>Next Page</button>
+</div>
+<div class="table-bordered">
     <table class="table table-hover" id="planets_table">
         <thead>
             <tr>
                 {% for planet_property_name in planet_properties_name %}
-                <th>{{ planet_property_name }}</th>
+                <th class='text-center'>{{ planet_property_name }}</th>
                 {% endfor %}
             </tr>
         </thead>

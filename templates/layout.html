@@ -5,22 +5,20 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous" defer></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <title>{% block title %}{% endblock %}</title>
-        <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
         <!--<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">-->
     </head>
     <body>
         {% block navbar %}{% endblock %}
         {% include "registration.html" %}
         {% include "ppl_residents.html" %}
+        {% if session.username %}
+            {% include "vote_statistics.html" %}
+        {% endif %}
         <div class="jumbotron">
             <div class="container-fluid">
-                <div class="row" id="pageButtons">
-                    <button type="button" class="btn btn-default changePageButton" id="previousPage" disabled>Previous</button>
-                    <button type="button" class="btn btn-default changePageButton" id="nextPage" disabled>Next Page</button>
-                </div>
                 {% block body %}{% endblock %}
             </div>
         </div>
-        
+        <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
     </body>
 </html>

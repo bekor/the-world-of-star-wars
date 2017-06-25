@@ -1,0 +1,31 @@
+<!-- Vote Statistics Modal -->
+<div class="container" style="position: absolute">
+    <div class="modal fade" role="dialog" id="voteStatModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Voted Planets</h4>
+                </div>
+                <div class="modal-body" id="">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="vote_table">
+                            <thead>
+                                <tr>
+                                    <th class='text-center'>Planet name</th>
+                                    <th class='text-center'>Votes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="votes" data-usersession="{{ session.username }}">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="close" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ <script src="{{ url_for('static', filename='js/vote_statistics.js') }}" defer></script>

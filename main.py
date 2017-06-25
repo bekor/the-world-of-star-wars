@@ -14,7 +14,7 @@ def index():
 
 @app.route('/list')
 def list_planets():
-    planet_properties_name = ["Name", "Diameter in KM", "Climate", "Terrain", 
+    planet_properties_name = ["Name", "Diameter", "Climate", "Terrain", 
                               "Surface water", "Population", "Residents"]
     return render_template('planets.html',
                            planet_properties_name=planet_properties_name,
@@ -76,7 +76,7 @@ def voted_planets():
     statistics = []
     planet_votes = query_handler.get_voted_planets()
     for planet in planet_votes:
-        current_planet = {"planetUrl": "http://swapi.co/api/planets/" + str(planet[0]), 
+        current_planet = {"planetUrl": "http://swapi.co/api/planets/" + str(planet[0]) + '/',
                           "votes": str(planet[1])}
         statistics.append(current_planet)
     return json.dumps({'status': 'OK', 'statistics': statistics})

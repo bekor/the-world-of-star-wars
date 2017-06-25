@@ -2,32 +2,27 @@ function planets(planetUrl){
     sessionStorage.setItem('planetUrl', planetUrl)
     var userName = $('#planet').data('usersession').toString();
     if( userName.length > 1){
-        getVotes(userName);
-    } else {
-        getPlanets();
+        getVotes(userName)
     }
+    getPlanets();
 
 }
 
 function getVotes(userName){
     $.getJSON('/' + userName + '/voted-planets', function(response){
-        getVotedPlanetsCallback(response.planets, userName);
+        sessionStorage.setItem('votedPlanets', response.planets)
     })
 }
 
-function getVotedPlanetsCallback(votedPlanets, userName){
-    sessionStorage.setItem('votedPlanets', votedPlanets)
-    getPlanets();
-}
 
 function getPlanets(){
     planetUrl = sessionStorage.getItem('planetUrl')
-    var planetResults;
+    var planetResults
     $.ajax({
         dataType: "json",
         url: planetUrl,
         success: function (response) {
-            getPlanetsCallback(response);
+            getPlanetsCallback(response)
         },
         fail: function(data, status){
             console.log(status)
@@ -36,8 +31,8 @@ function getPlanets(){
 }
 
 function getPlanetsCallback(response){
-    generateButtons(response.next, response.previous);
-    generatePlanets(response.results);
+    generateButtons(response.next, response.previous)
+    generatePlanets(response.results)
 }
 
 function generateButtons(next, prev){
@@ -45,12 +40,11 @@ function generateButtons(next, prev){
     $('#nextPage').prop('disabled', true)
     
     if(prev !== null){
-        $('#previousPage').attr('data-url', prev).prop('disabled', false);
+        $('#previousPage').attr('data-url', prev).prop('disabled', false)
     }
     if(next !== null){
-        $('#nextPage').attr('data-url', next).prop('disabled', false);
+        $('#nextPage').attr('data-url', next).prop('disabled', false)
     }
-
 }
 
 function generatePlanets(planetsArray){
@@ -59,14 +53,22 @@ function generatePlanets(planetsArray){
                        'surface_water', 'population',
                        'residents'];
     var votedPlanets = sessionStorage.getItem('votedPlanets')
-    votedPlanets = votedPlanets.split(',');
-    console.log(votedPlanets)
+    votedPlanets = votedPlanets.split(',')
     for(let i = 0; i < planetsArray.length; i++){
-        generatePlanetRow(planetsArray[i], planetAttrsName, votedPlanets);
+        formattedAttr = formatPlanetAttr(planetsArray[i])
+        generatePlanetRow(formattedAttr, planetAttrsName, votedPlanets)
     }
-
-
 }
+
+function formatPlanetAttr(planetsArray){
+    planetsArray.diameter = numberFormat(planetsArray.diameter) + " km"
+    planetsArray.population = numberFormat(planetsArray.population) + " people"
+    if(planetsArray.surface_water !== 'unknown'){
+        planetsArray.surface_water = planetsArray.surface_water + " %"
+    }
+    return planetsArray
+}
+
 
 function registVote(planetId, username){
     $.post("/planetvote", { planetid: planetId, username: username})
@@ -76,45 +78,47 @@ function registVote(planetId, username){
 }
 
 function generatePlanetRow(planetAttribute, attributeNames, votedPlanets) {
-    var planetHtmlId = planetAttribute.name.slice(0,2) + planetAttribute.orbital_period;
-    var planetUrlId = planetAttribute.url.slice(28, -1);
+    var planetHtmlId = planetAttribute.name.slice(0,2) + planetAttribute.orbital_period
+    var planetUrlId = planetAttribute.url.slice(28, -1)
     
-    let generateRow = $('<tr>').attr('id', planetHtmlId).attr('data-generated', true);
+    let generateRow = $('<tr>').attr('id', planetHtmlId).attr('data-generated', true)
     $(generateRow).appendTo('tbody');
     for(let i = 0; i< attributeNames.length; i++) {
         let palnetAtr;
         if(i == attributeNames.length-1) {
-            let residents = planetAttribute[attributeNames[i]];
+            let residents = planetAttribute[attributeNames[i]]
             var resAttr = valueResidtensButton(residents) 
             if(resAttr.peopleId.length > 0){  
                 palnetAtr = $(generateRow)
                                     .append($('<td>')
                                         .append($('<button>')
-                                            .attr('class', 'residentsButton')
+                                            .attr('class', 'btn btn-primary residentsButton')
                                             .attr('data-residence', planetAttribute.name)
                                             .attr('data-peopleId', resAttr.peopleId)
                                             .text(resAttr.text)
-                                        )
-                                    );
+                                        ).addClass('text-center')
+                                    )
             } else {
                 palnetAtr = $(generateRow)
-                                    .append($('<td>').text(resAttr.text));
+                                    .append($('<td>').text(resAttr.text).addClass('text-center'))
             }
-            $(palnetAtr).appendTo(generateRow);
+            $(palnetAtr).appendTo(generateRow)
         } else {
             palnetAtr = $(generateRow)
-                                .append($('<td>').text(planetAttribute[attributeNames[i]]));
-            $(palnetAtr).appendTo(generateRow);
+                                .append($('<td>').text(planetAttribute[attributeNames[i]]).addClass('text-center'))
+            $(palnetAtr).appendTo(generateRow)
         }
     }
-    var userSession = $('#planet').data('usersession').toString();
+    var userSession = $('#planet').data('usersession').toString()
     planetUrlId = planetUrlId + ""
     if(userSession.length > 1 && $.inArray(planetUrlId, votedPlanets) == -1){
-        var generateVoteRow = $('<tr>').append($('<button>')
-                                        .attr('class', 'voteButton')
+        var generateVoteRow = $('<tr>').append($('<td>').append($('<button>')
+                                        .attr('class', 'btn btn-block btn-warning voteButton')
                                         .attr('data-planetId', planetUrlId)
-                                        .text('Vote for ' + planetAttribute.name));
-        generateRow.after($(generateVoteRow));
+                                        .text('Vote for ' + planetAttribute.name)
+                                        ).attr("colspan", "100%")
+                                    ).addClass('text-center')
+        generateRow.after($(generateVoteRow))
     }
 }
 
@@ -148,7 +152,6 @@ $(document).ready(() => {
     $('.changePageButton').on('click', function(event) {
         var pageUrl = $(this).attr('data-url')
         $('#planet').html("")
-        console.log("EMPTY called" + pageUrl)
         planets(pageUrl)
     })
 })

@@ -1,8 +1,12 @@
 function voteStatistics(){
-    var username = $('#userIn').data('username').toString()
-    if(username > 1){
+    var residentArray, residenceName
+    $('#voteStatButton').on('click', function(event) {
+        $('#voteStatModal').modal('show')
+    });
+    var username = $('#votes').data('usersession').toString()
+    if(username.length > 1){
         $.getJSON('/list-of-voted-planets', function(response){
-            let statistics = response.statistics;
+            let statistics = response.statistics
             for(let i = 0; i < statistics.length; i++){
                 $.getJSON(statistics[i].planetUrl, function(swresponse){
                     planetName = swresponse.name
@@ -15,10 +19,10 @@ function voteStatistics(){
 }
 
 function generateRow(planetName, votes){
-    let generateRow = $('<tr>');
-    $(generateRow).appendTo('#votes');
-    $(generateRow).append($('<td>').text(planetName));
-    $(generateRow).append($('<td>').text(votes));
+    let generateRow = $('<tr>')
+    $(generateRow).appendTo('#votes')
+    $(generateRow).append($('<td>').text(planetName))
+    $(generateRow).append($('<td>').text(votes))
 }
 
-voteStatistics();
+$(document).ready(voteStatistics)
